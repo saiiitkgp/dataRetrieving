@@ -42,4 +42,4 @@ for i in range(0,len(response["minutely"]["data"])):
 	print(response["minutely"]["data"][i]["time"])
 	print(response["minutely"]["data"][i]["precipIntensity"])
 	print(response["minutely"]["data"][i]["precipProbability"])
-	print("---------------------------\n")
+	print("---------------------------")
