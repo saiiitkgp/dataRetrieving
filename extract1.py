@@ -28,8 +28,7 @@ def loadJson(jsonName):
 	except Exception as e:
 			print(e)
 
-
-takeInputs()
+#takeInputs()
 
 api = "https://api.darksky.net/forecast/"+key+"/"+latitude+","+longitude+","+time+"?exclude=currently,daily,flags"
 response = requests.get(api).json()
@@ -37,3 +36,10 @@ with open ('newData.json' ,'w') as f:
     json.dump(response,f, indent=3, sort_keys=False)
 
 #loaded = loadJson("newData.json")
+
+print(type(response))
+for i in range(0,len(response["minutely"]["data"])):
+	print(response["minutely"]["data"][i]["time"])
+	print(response["minutely"]["data"][i]["precipIntensity"])
+	print(response["minutely"]["data"][i]["precipProbability"])
+	print("---------------------------\n")
