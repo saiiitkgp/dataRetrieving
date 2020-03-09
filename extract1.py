@@ -10,13 +10,11 @@ def takeInputs():
 
 latitude = "42.3601"
 longitude = "-71.0589"
-time = ""
 #takeInputs()
-
 key = "b11ad4995e5003463aa7f750d36f0cb2"
+time = ""
 
-
-api = "https://api.darksky.net/forecast/+"key+"/"+latitude+","+longitude+","+args.tm+"?exclude=currently,flags"
+api = "https://api.darksky.net/forecast/+"key+"/"+latitude+","+longitude+","+time+"?exclude=currently,flags"
 print(api)
 #from sys import argv
 response = requests.get(api)
