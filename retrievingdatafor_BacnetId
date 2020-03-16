@@ -1,0 +1,162 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Mar 15 07:49:14 2020
+
+@author: z00461cr
+"""
+
+from scipy.io import loadmat
+
+import pandas as pd
+import os
+import numpy as np
+import datetime
+import openpyxl
+
+
+
+def get_bacnet_data(variable_name, raw_data):
+    
+    bacnet_names = raw_data[:,1]
+    dataframe = pd.DataFrame(bacnet_names)
+
+    listofvalue= dataframe.values.tolist()
+    
+    row_index = [variable_name for i in listofvalue for variable_name in i].index(variable_name)
+    
+        #print(listofvalue.index(variable_name))
+        #print(row_index)
+    data_values = raw_data[row_index,3]
+    type_values = data_values[0]
+    if float(type_values):
+        values = data_values
+    else:
+        if 'active' in data_values:
+            ReplaceIdx = data_values.index('active')
+            values[ReplaceIdx,1]= 10
+        if 'inactive' in data_values:
+            ReplaceIdx = data_values.index('inactive')
+            values[ReplaceIdx,1] = 0
+    
+    if (values.shape[0])==0:
+        print(raw_data)
+        print(variable_name + "Bacnet value not found! ")
+    return values,row_index
+
+
+path = 'C:/UserData/Z00461CR/Documents/DataAdlershof/2. ToExtract'
+files=[]
+
+for r,d,f in os.walk(path):
+    for file in f:
+        if '.mat' in file:
+            files.append(os.path.join(r, file))
+
+"""for eachfile in files:
+    x = loadmat(eachfile)
+    
+    time = x[] """
+x = loadmat('C:/UserData/Z00461CR/Documents/DataAdlershof/2. ToExtract/Merged_20170609T100716_20170623T075757_log.mat')
+
+
+t=x['DataContainer']
+
+
+
+date= pd.DataFrame(t[101,3])
+
+
+
+
+"""list_of_Bacnet_id = ["C'Geb1952'Mtr01","C'Geb1952'Mtr02","C'Geb1952'Mtr04","C'Geb1952'Mtr03","C'Geb1952'Mtr05","C'Geb1902'MtrC22","C'Geb1902'MtrC22",
+                    "C'Geb1902'MtrC21","C'Geb1902'MtrC23","C'Geb1901'MtrC14","C'Geb1901'MtrC11","C'Geb1901'MtrC12","C'Geb1901'MtrC13","C'Geb1901'MtrC101",
+                    "C'Geb1901'MtrC110","C'Geb1901'MtrC102","C'Geb1901'MtrC110","C'Geb1901'MtrC111","C'Geb1958'MtrC208","C'Geb1958'MtrC012","C'Geb1958'MtrC002",
+                    "C'Geb1958'MtrC001","C'Geb1951'MtrC05","C'Geb1951'MtrC06","C'Geb1951'MtrC07","C'Geb1951'MtrC04","C'Geb1951'MtrC03","C'Geb1951'MtrC205","C'Geb1951'MtrC204",
+                    "C'Geb1951'MtrC030","C'Geb1953'MtrC004","C'Geb1953'MtrC005","C'Geb1953'MtrC006","C'Geb1953'MtrC013","C'Geb1953'MtrC207","C'Geb1910'MtrC1","C'Geb1910'MtrC2",
+                    "C'Geb1905'MtrC050","C'Geb1905'MtrC060","C'Geb1910'MtrC56","C'Geb1910'MtrC55","C'Geb1910'MtrC50","C'Geb1910'MtrC126",
+                    "C'Geb1910'MtrC060","C'Geb1951'MtrC01","C'Geb1951'MtrC02"] """
+
+list_of_Bacnet_id = ["C'Geb1952'Mtr01"]
+dictionary_of_eachBacnetid = {}
+
+load_as_dataframe = pd.read_excel('C:/Users/Z00461CR/Shared_Documents_Krishna_Sai (Oliver Doelle)/Projektunterlagen Adlershof/Ede_File.xls', index=False)
+
+whole_bacnet_names_edsfile = load_as_dataframe[8:]['# Proposal_Engineering-Data-Exchange - B.I.G.-EU']
+                                              
+for i in list_of_Bacnet_id:
+     list = []
+     for j in whole_bacnet_names_edsfile:
+         if i in j:
+             key=i
+             dictionary_of_eachBacnetid.setdefault(key,[]).append(j)
+workbook = openpyxl.Workbook()
+sheet = workbook.active                                          
+row =1
+column=1
+numbermeasuringpoint=0
+"""for list_of_Bacnet_id,sub_bacnetid in dictionary_of_eachBacnetid.items():
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active                                          
+    row =1
+    column=1
+    numbermeasuringpoint=0
+    
+    for element in sub_bacnetid:
+        column=1
+        BacnetName = sub_bacnetid[numbermeasuringpoint]
+        numbermeasuringpoint+=1
+        sheet.cell(row=row,column=column,value=row)
+        column+=1
+        sheet.cell(row=row,column=column,value=BacnetName)
+        if BacnetName in t[:,1]:
+            
+            column+=1
+            [values,Index_Bacnet]= get_bacnet_data(BacnetName,t)
+            sheet.cell(row = row,column = column+1,value = values)
+            sheet.cell(row = row, column = 3, value = t[Index_Bacnet,3])
+        else:
+            sheet.cell(row = row, column =4, value = )
+            row+=1
+        workbook.save(filename="my_workbook.xlsx") """
+
+
+for list_of_Bacnet_id,sub_bacnetid in dictionary_of_eachBacnetid.items():
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active                                          
+    row =1
+    column=1
+    numbermeasuringpoint=0
+    
+    for element in sub_bacnetid:
+        column=1
+        stringvalues=""
+        BacnetName = sub_bacnetid[numbermeasuringpoint]
+        numbermeasuringpoint+=1
+        sheet.cell(row=row,column=1,value=row)
+        column+=1
+        sheet.cell(row=row,column=2,value=BacnetName)
+        
+        if BacnetName in t[:,1]:
+            [values,Index_Bacnet]= get_bacnet_data(BacnetName,t)
+            somelist = values.tolist()
+            stringvalues=""
+            for each_value in somelist:
+                stringvalues= stringvalues + str(each_value)
+                stringvalues= stringvalues+'$'
+            sheet.cell(row = row,column = 4,value = stringvalues)
+            sheet.cell(row = row, column = 3, value = t[Index_Bacnet,2][0])
+            
+        else:
+            stringvalues=""
+            for k in range(int(date.count())):
+                
+                stringvalues=stringvalues+"0."
+                stringvalues=stringvalues+"$"
+            
+            sheet.cell(row = row, column =4, value = stringvalues)
+        row+=1
+            #row+=1
+        datetosave=str( date[0][0]+"_"+date[0][int(date.count()-1)])
+        savename = str(list_of_Bacnet_id+"_" + datetosave)
+        filenametosave = "C:/UserData/Z00461CR/Documents/DataAdlershof/NewlyExtracted/"+savename+".xslx"
+        workbook.save(filenametosave)
